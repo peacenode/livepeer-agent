@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "src", "outDir": ".build", "tsBuildInfoFile": ".build/.tsbuildinfo" },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../packages/pi-coding-agent/tsconfig.build.json" },
+    { "path": "../../packages/contracts" },
+    { "path": "../../packages/livepeer-client" },
+    { "path": "../../packages/model-providers" },
+    { "path": "../../packages/terminal-host" }
+  ]
+}

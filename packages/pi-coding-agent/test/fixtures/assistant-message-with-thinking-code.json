@@ -1,0 +1,32 @@
+{
+	"role": "assistant",
+	"content": [
+		{
+			"type": "thinking",
+			"thinking": "Inspect the synthetic input and compare the two code paths.\n\n```typescript\nconst result = choosePath(input);\n```\n\nThe rendered fixture intentionally contains code inside a thinking block."
+		},
+		{
+			"type": "text",
+			"text": "The synthetic example renders thinking and Markdown without retaining a real session."
+		}
+	],
+	"api": "synthetic-api",
+	"provider": "synthetic-provider",
+	"model": "synthetic-model",
+	"usage": {
+		"input": 100,
+		"output": 50,
+		"cacheRead": 0,
+		"cacheWrite": 0,
+		"totalTokens": 150,
+		"cost": {
+			"input": 0,
+			"output": 0,
+			"cacheRead": 0,
+			"cacheWrite": 0,
+			"total": 0
+		}
+	},
+	"stopReason": "stop",
+	"timestamp": 1767225600000
+}

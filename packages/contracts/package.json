@@ -1,0 +1,1 @@
+{"name":"@livepeer-agent/contracts","version":"0.0.0","private":true,"type":"module","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"},"./testing":{"types":"./dist/testing/index.d.ts","default":"./dist/testing/index.js"}},"scripts":{"build":"tsc -b","typecheck":"tsc -b --pretty false"}}

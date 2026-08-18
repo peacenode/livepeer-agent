@@ -1,0 +1,8 @@
+packages:
+  - apps/cli
+  - packages/contracts
+  - packages/livepeer-client
+  - packages/model-providers
+  - packages/terminal-host
+  - packages/pi-coding-agent
+  - packages/pi-coding-agent/examples/extensions/with-deps

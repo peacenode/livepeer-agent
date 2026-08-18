@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag, for example v0.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.2.2
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4.1.0
+        with:
+          version: 10.15.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Resolve release tag
+        id: tag
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            release_tag="$GITHUB_REF_NAME"
+          else
+            release_tag="$DISPATCH_VERSION"
+          fi
+          node scripts/validate-release-version.mjs "$release_tag"
+          echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y ripgrep
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm check
+      - run: ./test.sh
+      - name: Build checksummed release
+        id: package
+        run: |
+          artifact_dir=".build/release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          ./scripts/package-release.sh "$artifact_dir"
+          ./scripts/validate-installer.sh "$artifact_dir/livepeer-agent.tgz"
+          echo "artifact_dir=$artifact_dir" >> "$GITHUB_OUTPUT"
+      - name: Validate packaged release version
+        env:
+          ARTIFACT_DIR: ${{ steps.package.outputs.artifact_dir }}
+          RELEASE_TAG: ${{ steps.tag.outputs.release_tag }}
+        run: >-
+          node scripts/validate-release-version.mjs "$RELEASE_TAG"
+          --artifact "$ARTIFACT_DIR/livepeer-agent.tgz"
+          --binary apps/cli/dist/index.js
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_DIR: ${{ steps.package.outputs.artifact_dir }}
+          RELEASE_TAG: ${{ steps.tag.outputs.release_tag }}
+        run: >-
+          gh release create "$RELEASE_TAG"
+          "$ARTIFACT_DIR/livepeer-agent.tgz"
+          "$ARTIFACT_DIR/livepeer-agent.tgz.sha256"
+          --repo "$GITHUB_REPOSITORY"
+          --target "$GITHUB_SHA"
+          --title "$RELEASE_TAG"
+          --generate-notes

@@ -1,0 +1,1 @@
+{"name":"@livepeer-agent/livepeer-client","version":"0.0.0","private":true,"type":"module","exports":{".":{"types":"./dist/index.d.ts","default":"./dist/index.js"}},"scripts":{"build":"tsc -b","typecheck":"tsc -b --pretty false"},"dependencies":{"@livepeer-agent/contracts":"workspace:*","@modelcontextprotocol/sdk":"^1.29.0"}}

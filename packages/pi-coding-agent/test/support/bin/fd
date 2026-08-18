@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+
+import { readFile, readdir } from "node:fs/promises";
+import { join, relative, resolve, sep } from "node:path";
+import ignore from "ignore";
+import { minimatch } from "minimatch";
+
+const args = process.argv.slice(2);
+const separator = args.indexOf("--");
+if (separator < 0 || args.length < separator + 3) {
+  process.stderr.write("fd test fixture: missing pattern or search path\n");
+  process.exit(2);
+}
+
+const fullPath = args.includes("--full-path");
+const maxResultsIndex = args.indexOf("--max-results");
+const maxResults = maxResultsIndex >= 0 ? Number(args[maxResultsIndex + 1]) : Number.POSITIVE_INFINITY;
+const pattern = args[separator + 1];
+const searchRoot = resolve(args[separator + 2]);
+if (!pattern || (pattern.includes("[") && !pattern.includes("]"))) {
+  process.stderr.write("error parsing glob\n");
+  process.exit(1);
+}
+
+const ignoreFiles = [];
+const candidates = [];
+
+async function loadIgnoreFile(directory) {
+  try {
+    const content = await readFile(join(directory, ".gitignore"), "utf8");
+    ignoreFiles.push({ directory, matcher: ignore().add(content) });
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+}
+
+async function walk(directory) {
+  await loadIgnoreFile(directory);
+  const entries = await readdir(directory, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    const absolutePath = join(directory, entry.name);
+    candidates.push({ absolutePath, directory: entry.isDirectory() });
+    if (entry.isDirectory()) await walk(absolutePath);
+  }
+}
+
+function isIgnored(absolutePath) {
+  let ignored = false;
+  for (const ruleSet of ignoreFiles) {
+    const scopedPath = relative(ruleSet.directory, absolutePath).split(sep).join("/");
+    if (!scopedPath || scopedPath === ".." || scopedPath.startsWith("../")) continue;
+    const result = ruleSet.matcher.test(scopedPath);
+    if (result.ignored) ignored = true;
+    if (result.unignored) ignored = false;
+  }
+  return ignored;
+}
+
+await walk(searchRoot);
+let emitted = 0;
+for (const candidate of candidates) {
+  if (isIgnored(candidate.absolutePath)) continue;
+  const normalized = candidate.absolutePath.split(sep).join("/");
+  const value = fullPath ? normalized : candidate.absolutePath.split(sep).at(-1) ?? "";
+  if (!minimatch(value, pattern, { dot: true })) continue;
+  process.stdout.write(`${candidate.absolutePath}${candidate.directory ? sep : ""}\n`);
+  emitted += 1;
+  if (emitted >= maxResults) break;
+}

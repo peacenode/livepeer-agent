@@ -1,0 +1,34 @@
+title = "Livepeer Agent gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "livepeer-sensitive-environment-value"
+description = "Non-placeholder value assigned to a Livepeer Agent secret environment variable"
+regex = '''(?mi)^[ \t]*(?:export[ \t]+)?(?:BETTER_AUTH_SECRET|INVITATION_PEPPER|(?:AUTH_|ACCESS_)?DATABASE_URL|DAYDREAM_API_KEY|LIVEPEER_SERVICE_TOKEN|RESEND_API_KEY)[ \t]*=[ \t]*["']?([^\s"'<>$]+)'''
+secretGroup = 1
+keywords = [
+  "ACCESS_DATABASE_URL",
+  "AUTH_DATABASE_URL",
+  "BETTER_AUTH_SECRET",
+  "DATABASE_URL",
+  "DAYDREAM_API_KEY",
+  "INVITATION_PEPPER",
+  "LIVEPEER_SERVICE_TOKEN",
+  "RESEND_API_KEY",
+]
+
+[[rules.allowlists]]
+description = "Documentation placeholders"
+regexTarget = "secret"
+regexes = ['''^(?:\.\.\.|\*\*\*|changeme|example|placeholder|test-only)$''']
+
+# Pi's upstream installed-app OAuth client identifier is public application
+# metadata, not a confidential client secret. Restrict the exception to the
+# exact upstream commit and source path so unrelated findings still fail.
+[[allowlists]]
+description = "Pi Google Cloud installed-app OAuth metadata false positive"
+condition = "AND"
+commits = ["085a103ff337cec88685fecf1eb399c5a06e8b53"]
+paths = ['''^src/core/oauth/google-cloud\.ts$''']

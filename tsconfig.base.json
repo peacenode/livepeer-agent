@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@livepeer-agent/contracts": ["./packages/contracts/src/index.ts"],
+      "@livepeer-agent/contracts/testing": ["./packages/contracts/src/testing/index.ts"],
+      "@livepeer-agent/livepeer-client": ["./packages/livepeer-client/src/index.ts"],
+      "@livepeer-agent/model-providers": ["./packages/model-providers/src/index.ts"],
+      "@livepeer/pi-coding-agent": ["./packages/pi-coding-agent/src/index.ts"],
+      "@livepeer-agent/terminal-host": ["./packages/terminal-host/src/index.ts"],
+      "@livepeer-agent/terminal-host/testing": ["./packages/terminal-host/src/testing/index.ts"]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@livepeer-agent/terminal-host",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "default": "./dist/testing/index.js"
+    },
+    "./livepeer": {
+      "types": "./dist/livepeer/index.d.ts",
+      "default": "./dist/livepeer/index.js"
+    },
+    "./resources": {
+      "types": "./dist/resources/index.d.ts",
+      "default": "./dist/resources/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.84.1",
+    "@earendil-works/pi-tui": "0.84.1",
+    "@livepeer-agent/contracts": "workspace:*",
+    "@livepeer-agent/livepeer-client": "workspace:*",
+    "@livepeer/pi-coding-agent": "workspace:*"
+  }
+}

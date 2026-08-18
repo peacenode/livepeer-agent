@@ -1,0 +1,22 @@
+{
+  "name": "@livepeer-agent/cli",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "livepeer": "dist/index.js",
+    "livepeer-agent": "dist/index.js"
+  },
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=22.19" },
+  "scripts": {
+    "build": "tsc -b && node ../../scripts/build-cli.mjs",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.84.1",
+    "@livepeer-agent/model-providers": "workspace:*",
+    "@livepeer/pi-coding-agent": "workspace:*",
+    "commander": "^13.1.0"
+  }
+}

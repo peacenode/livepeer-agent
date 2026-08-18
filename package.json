@@ -1,0 +1,43 @@
+{
+  "name": "livepeer-agent-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=22.19"
+  },
+  "scripts": {
+    "build": "pnpm --filter @livepeer/pi-coding-agent build && tsc -b && node scripts/build-cli.mjs",
+    "clean": "tsc -b --clean",
+    "lint": "eslint .",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run && node --test scripts/validate-release-version.test.mjs",
+    "package:validate": "node scripts/validate-package.mjs",
+    "release:package": "./scripts/package-release.sh",
+    "release:validate-version": "node scripts/validate-release-version.mjs",
+    "release:promote": "./scripts/promote-release.sh",
+    "release:promote:validate": "./scripts/validate-promotion.sh",
+    "check": "pnpm lint && pnpm typecheck && node scripts/validate-workspace.mjs"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.84.1",
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@xterm/headless": "5.5.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.0.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@earendil-works/pi-agent-core": "0.84.1",
+      "@earendil-works/pi-ai": "0.84.1",
+      "@earendil-works/pi-client": "0.84.1",
+      "@earendil-works/pi-protocol": "0.84.1",
+      "@earendil-works/pi-tui": "0.84.1"
+    }
+  }
+}

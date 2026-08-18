@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/contracts" },
+    { "path": "packages/livepeer-client" },
+    { "path": "packages/model-providers" },
+    { "path": "packages/pi-coding-agent/tsconfig.build.json" },
+    { "path": "packages/terminal-host" },
+    { "path": "apps/cli" }
+  ]
+}
